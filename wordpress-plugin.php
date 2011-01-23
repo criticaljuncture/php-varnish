@@ -274,6 +274,7 @@ function wpv_purge_on_shutdown(){
 
 if( get_option('wpv_enabled') ){
     // invoke purge actions when posts and comments are edited
+    add_action( 'publish_page',      'wpv_edit_post_action',    99, 1 );
     add_action( 'publish_post',      'wpv_edit_post_action',    99, 1 );
     add_action( 'deleted_post',      'wpv_edit_post_action',    99, 1 );
     add_action( 'comment_post',      'wpv_edit_comment_action', 99, 1 );
