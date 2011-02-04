@@ -224,6 +224,10 @@ function wpv_edit_post_action( $postid, $comment = false ){
         $patt = $path ? '^'.$root_path.'/'.$path.'/page/.*' : '^'.$root_path.'/page/.*';
         $wpv_to_purge[$patt] = true;
     }
+    
+    // always purge the search results
+    $wpv_to_purge['^'.$root_path.'/\?'] = true;
+    
     // purge pop up comments?
     // '\\?comments_popup='.$postid; // <- untested
     // tag and category page listings
