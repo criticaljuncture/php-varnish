@@ -32,7 +32,7 @@ function wpv_baseurl(){
 		$protocol = empty($_SERVER['HTTPS']) ? 'http' : 'https';
 		$baseurl = $protocol.'://'.$hostname;
 	}
-	return $baseurl;
+	return $baseurl . get_option('wpv_path');
 }
 
 
@@ -206,19 +206,22 @@ function wpv_edit_post_action( $postid, $comment = false ){
     if( $comment ){
         return;
     }
+    
+    $root_path = get_option('wpv_path');
+    
     // always purge all feeds
-    $wpv_to_purge['^/feed'] = true;
+    $wpv_to_purge['^'.$root_path.'/feed'] = true;
     // the actual post page, and any extensions thereof
     $wpv_to_purge['^'.$uri.'?'] = true;
     // to purge all archives and index pages we will purge all sub paths absolutely
-    $bits = preg_split( '!/!', $uri, -1, PREG_SPLIT_NO_EMPTY );
+    $bits = preg_split( '!/!', preg_replace('!^' . $root_path . '!', '',$uri), -1, PREG_SPLIT_NO_EMPTY );
     while( array_pop($bits) ){
         $path = implode('/',$bits);
         // rebuild the post page
-        $patt = $path ? '^/'.$path.'/?$' : '^/$';
+        $patt = $path ? '^'.$root_path.'/'.$path.'/?$' : '^'.$root_path.'/$';
         $wpv_to_purge[$patt] = true;
         // rebuild all the paginated pages
-        $patt = $path ? '^/'.$path.'/page/.*' : '^/page/.*';
+        $patt = $path ? '^'.$root_path.'/'.$path.'/page/.*' : '^'.$root_path.'/page/.*';
         $wpv_to_purge[$patt] = true;
     }
     // purge pop up comments?
@@ -230,7 +233,7 @@ function wpv_edit_post_action( $postid, $comment = false ){
             foreach( $terms as $term ){
                 $uri = get_term_link( $term, $t) and
                 $uri = parse_url( $uri, PHP_URL_PATH ) and
-                $wpv_to_purge['^'.$uri.'?'] = true;
+                $wpv_to_purge['^'.$uri.'$'] = true;
             }
         }
     }
@@ -254,7 +257,7 @@ function wpv_edit_comment_action( $commentid ){
     // purge post that comment is on
     wpv_edit_post_action( $post_id, true );
     global $wpv_to_purge;
-    $wpv_to_purge['^/comments/feed'] = true;
+    $wpv_to_purge['^'.get_option('wpv_path').'/comments/feed'] = true;
 }
 
 
