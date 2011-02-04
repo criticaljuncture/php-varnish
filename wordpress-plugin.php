@@ -226,7 +226,7 @@ function wpv_edit_post_action( $postid, $comment = false ){
     }
     
     // always purge the search results
-    $wpv_to_purge['^'.$root_path.'/\?'] = true;
+    $wpv_to_purge['^'.$root_path.'/?'] = true;
     
     // purge pop up comments?
     // '\\?comments_popup='.$postid; // <- untested
