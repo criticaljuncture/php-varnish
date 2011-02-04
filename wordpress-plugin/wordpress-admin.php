@@ -18,6 +18,7 @@ if( isset($postdata['wpv_save']) ){
     update_option( 'wpv_secrets', $postdata['wpv_secrets'] );
     update_option( 'wpv_host_pattern', $postdata['wpv_host_pattern'] );
     update_option( 'wpv_path', $postdata['wpv_path'] );
+    update_option( 'wpv_always_purge_pattern', $postdata['wpv_always_purge_pattern'] );
     update_option( 'wpv_enabled', ! empty($postdata['wpv_enabled']) );
 }
 
@@ -72,6 +73,7 @@ if( ! $hostpattern && preg_match('![^\./]+\.[a-z]+!i',get_option('siteurl'),$r) 
 }
 
 $path = get_option('wpv_path',''); 
+$always_purge_pattern = get_option('wpv_always_purge_pattern',''); 
 
 // defaults that may not have been set
 isset($pingclients) or $pingclients = $clients;
@@ -95,6 +97,9 @@ isset($purge) or $purge = 'req.url ~ "^/$"'.($hostpattern ? ' && req.http.host ~
     		<br />
     		<fieldset>
     			<label for="f_wpv_path">Root path (eg <code>/blog</code>)</label>: <input type="text" name="wpv_path" id="f_wpv_path" value="<?php echo esc_html($path)?>" size="32" />
+    		</fieldset>
+    		<fieldset>
+    			<label for="f_wpv_always_purge_pattern">Always purge (eg <code>(^/some/special/page$)|(^/some/other/pattern)</code>)</label>: <input type="text" name="wpv_always_purge_pattern" id="f_wpv_always_purge_pattern" value="<?php echo esc_html($always_purge_pattern)?>" size="32" />
     		</fieldset>
     		<fieldset>
     			<label for="f_wpv_host_pattern">Specify a host name pattern for purge commands</label> <br />

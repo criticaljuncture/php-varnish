@@ -237,6 +237,8 @@ function wpv_edit_post_action( $postid, $comment = false ){
             }
         }
     }
+    
+    wpv_add_always_purge_patterns();
 }
 
 
@@ -260,7 +262,13 @@ function wpv_edit_comment_action( $commentid ){
     $wpv_to_purge['^'.get_option('wpv_path').'/comments/feed'] = true;
 }
 
-
+function wpv_add_always_purge_patterns() {
+  global $wpv_to_purge;
+  $always_purge_pattern = get_option('wpv_always_purge_pattern');
+  if( $always_purge_pattern ) {
+    $wpv_to_purge[$always_purge_pattern] = true;
+  }
+}
 
 /**
  * Shutdown function; purges all URLs this execution
